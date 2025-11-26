@@ -4,515 +4,500 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LLM Privacy Policy Deep Dive</title>
+  <title>AI Privacy 2025: The Glass Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
 
-  <!-- Chosen Palette: Warm Neutral / Slate -->
-  <!-- Primary Background: #f8fafc (slate-50) -->
-  <!-- Card Background: #ffffff (white) -->
-  <!-- Text Primary: #1e293b (slate-800) -->
-  <!-- Accents: #3b82f6 (blue-500 for US), #ef4444 (red-500 for CN), #10b981 (emerald-500 for Safe) -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Space Grotesk', 'monospace'],
+          },
+          colors: {
+            slate: {
+              850: '#151e2e',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            cyan: {
+              400: '#22d3ee',
+              500: '#06b6d4',
+            },
+            rose: {
+              500: '#f43f5e',
+            }
+          },
+          backgroundImage: {
+            'grid-pattern': "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
-      color: #1e293b;
+      background-color: #020617;
+      color: #e2e8f0;
+      overflow-x: hidden;
     }
 
-    /* Chart Container Styling - Mandatory Requirement */
+    /* Tech Grid Background */
+    .bg-tech-grid {
+      background-size: 40px 40px;
+      mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, 10%, black, 90%, transparent);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    /* Glassmorphism Card */
+    .glass-card {
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(148, 163, 184, 0.3);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+    }
+
+    /* Neon Glow Text */
+    .text-glow-blue {
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+    }
+
+    .text-glow-red {
+      text-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+    }
+
+    /* Chart Containers */
     .chart-container {
       position: relative;
       width: 100%;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 0 auto;
       height: 300px;
-      max-height: 400px;
+      max-height: 350px;
     }
 
-    @media (min-width: 768px) {
-      .chart-container {
-        height: 350px;
+    /* Animated Badge */
+    .pulse-badge {
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse-red {
+      0% {
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4);
       }
-    }
 
-    .marker-us {
-      border-left: 4px solid #3b82f6;
-    }
+      70% {
+        box-shadow: 0 0 0 6px rgba(244, 63, 94, 0);
+      }
 
-    .marker-cn {
-      border-left: 4px solid #ef4444;
-    }
-
-    .risk-low {
-      background-color: #d1fae5;
-      color: #065f46;
-    }
-
-    .risk-med {
-      background-color: #fef3c7;
-      color: #92400e;
-    }
-
-    .risk-high {
-      background-color: #fee2e2;
-      color: #991b1b;
+      100% {
+        box-shadow: 0 0 0 0 rgba(244, 63, 94, 0);
+      }
     }
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: #0f172a;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+      background: #334155;
+      border-radius: 3px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+      background: #475569;
     }
 
-    .nav-active {
-      border-bottom: 2px solid #3b82f6;
-      color: #3b82f6;
-      font-weight: 600;
+    /* Input Styling */
+    select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem;
+      -webkit-appearance: none;
+      appearance: none;
     }
   </style>
-
-  <!-- Application Structure Plan:
-         1. Header & Navigation: Simple sticky nav.
-         2. Executive Dashboard: High-level charts (Radar & Doughnut) showing the "Big Picture".
-         3. Vendor Comparison Matrix: The core interactive section. Users can filter by Region. Cards expand to show details.
-         4. Regional Deep Dive: Text-heavy but structured analysis of GDPR/Copyright vs China Compliance.
-         5. Data Journey Simulator: A linear visual flow explaining "Where does my prompt go?".
-         6. Risk Calculator: Input form -> Logic -> Output Recommendation.
-    -->
-
-  <!-- Visualization & Content Choices:
-         1. Radar Chart (Chart.js): Comparing aggregate "Privacy Scores" of US vs CN models.
-         2. Doughnut Chart (Chart.js): Visualizing % of models that train on user data by default.
-         3. Risk Meter (CSS/JS): Dynamic gauge based on user questionnaire.
-         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
-    -->
 </head>
 
-<body class="antialiased">
+<body class="antialiased selection:bg-cyan-500 selection:text-white">
 
-  <!-- Navigation -->
-  <nav class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <span class="text-xl font-bold text-slate-800 tracking-tight">AI Privacy<span
-              class="text-blue-600">Watch</span></span>
-        </div>
-        <div class="hidden sm:flex space-x-8 items-center">
-          <button onclick="scrollToSection('dashboard')"
-            class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Overview</button>
-          <button onclick="scrollToSection('matrix')"
-            class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Vendor
-            Matrix</button>
-          <button onclick="scrollToSection('regional')"
-            class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">US vs
-            China</button>
-          <button onclick="scrollToSection('calculator')"
-            class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md">Risk
-            Check</button>
-        </div>
+  <!-- Background Grid -->
+  <div class="bg-tech-grid bg-grid-pattern"></div>
+
+  <!-- Floating Nav -->
+  <nav class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4">
+    <div class="glass-card rounded-full px-6 py-3 flex items-center space-x-6 sm:space-x-12 shadow-2xl">
+      <span class="font-mono font-bold text-white tracking-widest text-lg">PRIVACY<span
+          class="text-rose-500">.AI</span></span>
+      <div class="hidden sm:flex space-x-8 text-xs font-mono tracking-wide text-slate-400">
+        <button onclick="scrollToSection('dashboard')"
+          class="hover:text-cyan-400 transition-colors uppercase">Data</button>
+        <button onclick="scrollToSection('matrix')"
+          class="hover:text-cyan-400 transition-colors uppercase">Vendors</button>
+        <button onclick="scrollToSection('risk')"
+          class="text-rose-400 hover:text-rose-300 transition-colors uppercase font-bold">Risk Check</button>
       </div>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 space-y-24">
 
-    <!-- Intro -->
-    <div class="text-center max-w-3xl mx-auto mb-12">
-      <h1 class="text-4xl font-extrabold text-slate-900 mb-4">Is Your Prompt Training Their Model?</h1>
-      <p class="text-lg text-slate-600 leading-relaxed">
-        A deep dive into the privacy policies of Google, OpenAI, Alibaba, Moonshot, and more.
-        <span class="font-semibold text-slate-800">Key Finding:</span> Free consumer data is "fuel" for training, while
-        Enterprise editions offer the data isolation you likely need.
+    <!-- Hero Section -->
+    <header class="text-center relative">
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-cyan-500/10 blur-[100px] rounded-full -z-10">
+      </div>
+
+      <div
+        class="inline-block px-3 py-1 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-400 text-[10px] font-mono mb-6 tracking-widest uppercase">
+        Alert: Sept 2025 Policy Shift
+      </div>
+
+      <h1
+        class="text-5xl sm:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 mb-6 tracking-tight leading-tight">
+        Is Your Data <br>
+        <span class="text-cyan-400 text-glow-blue">Training</span> the Machine?
+      </h1>
+
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+        The era of privacy by obscurity is over. <br>
+        <span class="text-white font-medium">99% of Consumer AI</span> now trains on your prompts by default.
       </p>
-    </div>
+    </header>
 
-    <!-- Section 1: Dashboard -->
-    <section id="dashboard" class="scroll-mt-20">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sm:p-8">
-        <div class="mb-6 border-b border-slate-100 pb-4">
-          <h2 class="text-2xl font-bold text-slate-800">Executive Privacy Dashboard</h2>
-          <p class="text-slate-500 mt-1 text-sm">Aggregate analysis based on public 2024 Terms of Service & Privacy
-            Policies.</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <!-- Left: Radar Chart -->
-          <div class="bg-slate-50 rounded-xl p-4">
-            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4 text-center">Regional Policy
-              Focus</h3>
-            <div class="chart-container">
-              <canvas id="radarChart"></canvas>
-            </div>
-            <div class="text-center mt-2 text-xs text-slate-400">Source: 2024 Vendor Privacy Agreements</div>
-          </div>
-
-          <!-- Right: Key Stats & Doughnut -->
-          <div class="space-y-6">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <div class="text-2xl font-bold text-blue-700">85%</div>
-                <div class="text-xs text-blue-600 mt-1">Consumer Apps Train on Data by Default</div>
-              </div>
-              <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
-                <div class="text-2xl font-bold text-emerald-700">100%</div>
-                <div class="text-xs text-emerald-600 mt-1">Enterprise APIs Promise Data Isolation</div>
-              </div>
-            </div>
-
-            <div class="bg-white border border-slate-200 rounded-lg p-4">
-              <h3 class="text-sm font-semibold text-slate-700 mb-2">Default Training Policy (Consumer)</h3>
-              <div class="chart-container" style="height: 200px;">
-                <canvas id="doughnutChart"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: Vendor Matrix -->
-    <section id="matrix" class="scroll-mt-20">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <div>
-          <h2 class="text-2xl font-bold text-slate-800">Vendor Privacy Matrix</h2>
-          <p class="text-slate-500 text-sm mt-1">Compare data retention and human review policies across major
-            providers.</p>
-        </div>
-
-        <!-- Filters -->
-        <div class="flex bg-white rounded-lg shadow-sm border border-slate-200 p-1">
-          <button onclick="setFilter('all')" id="btn-all"
-            class="px-4 py-2 text-sm font-medium rounded-md bg-slate-100 text-slate-800">All</button>
-          <button onclick="setFilter('us')" id="btn-us"
-            class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-50">US / Global</button>
-          <button onclick="setFilter('cn')" id="btn-cn"
-            class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-50">China</button>
-        </div>
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="relative">
+      <!-- Decorative line -->
+      <div
+        class="absolute -left-4 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-cyan-500/50 to-transparent hidden xl:block">
       </div>
 
-      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Cards will be injected by JS -->
-      </div>
-    </section>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <!-- Section 3: US vs China Deep Dive -->
-    <section id="regional" class="scroll-mt-20">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div class="p-8 bg-slate-900 text-white">
-          <h2 class="text-2xl font-bold">Regulatory Divergence: US vs China</h2>
-          <p class="text-slate-300 mt-2">Both regions prioritize security, but their regulatory engines drive in
-            different directions.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2">
-          <!-- US Side -->
-          <div class="p-8 border-b md:border-b-0 md:border-r border-slate-100">
-            <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                US</div>
-              <h3 class="text-xl font-bold text-slate-800">US / EU Model</h3>
-            </div>
-            <ul class="space-y-4">
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-blue-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Focus: Copyright & PII</strong>
-                  <p class="text-sm text-slate-500">Major legal battles surround copyright infringement (e.g., NYT
-                    lawsuit) and GDPR compliance regarding Personal Identifiable Information (PII).</p>
-                </div>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-blue-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Opt-out Mechanism</strong>
-                  <p class="text-sm text-slate-500">Generally operate on a "Consent by Default" basis. Users must
-                    actively dig into settings to find "Data Controls" and opt-out of training.</p>
-                </div>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-blue-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Black Box Transparency</strong>
-                  <p class="text-sm text-slate-500">Companies like OpenAI are becoming increasingly opaque about
-                    specific training datasets, citing trade secrets.</p>
-                </div>
-              </li>
-            </ul>
+        <!-- Big Stat Card -->
+        <div
+          class="lg:col-span-4 glass-card rounded-2xl p-8 flex flex-col justify-center relative overflow-hidden group">
+          <div
+            class="absolute top-0 right-0 p-32 bg-rose-500/10 blur-[60px] rounded-full transition-all group-hover:bg-rose-500/20">
           </div>
 
-          <!-- China Side -->
-          <div class="p-8">
-            <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold">CN
-              </div>
-              <h3 class="text-xl font-bold text-slate-800">China Model</h3>
-            </div>
-            <ul class="space-y-4">
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-red-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Focus: Content Compliance</strong>
-                  <p class="text-sm text-slate-500">Governed by the "Interim Measures for Generative AI," emphasizing
-                    truthfulness, accuracy, and social stability.</p>
-                </div>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-red-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Real-Name Verification</strong>
-                  <p class="text-sm text-slate-500">Mobile phone verification is mandatory. Anonymity is low, and data
-                    is traceable to specific users.</p>
-                </div>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-1 text-red-500">●</span>
-                <div>
-                  <strong class="block text-slate-700">Enterprise Isolation</strong>
-                  <p class="text-sm text-slate-500">To encourage industrial adoption, Chinese vendors (e.g., Alibaba,
-                    Zhipu) provide strict, legally binding data isolation for B2B API clients.</p>
-                </div>
-              </li>
-            </ul>
+          <h3 class="text-slate-400 font-mono text-xs uppercase tracking-widest mb-2">Consumer Exposure</h3>
+          <div class="text-6xl sm:text-7xl font-bold text-white mb-2 tracking-tighter">
+            99<span class="text-rose-500 text-4xl">%</span>
+          </div>
+          <p class="text-slate-400 text-sm border-l-2 border-rose-500 pl-3">
+            of free/consumer models use user inputs for training logs & model fine-tuning.
+          </p>
+        </div>
+
+        <!-- Doughnut Card -->
+        <div class="lg:col-span-4 glass-card rounded-2xl p-6">
+          <h3 class="text-slate-400 font-mono text-xs uppercase tracking-widest mb-6 text-center">Default Policy
+            Distribution</h3>
+          <div class="chart-container" style="height: 220px;">
+            <canvas id="doughnutChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Radar Card -->
+        <div class="lg:col-span-4 glass-card rounded-2xl p-6">
+          <h3 class="text-slate-400 font-mono text-xs uppercase tracking-widest mb-6 text-center">Privacy Profile: US vs
+            CN</h3>
+          <div class="chart-container" style="height: 220px;">
+            <canvas id="radarChart"></canvas>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 4: Data Journey Simulator -->
-    <section class="bg-white rounded-2xl p-6 border border-slate-200">
-      <h2 class="text-xl font-bold text-slate-800 mb-6">The Data Journey: Where Does It Go?</h2>
+    <!-- The Pipeline (Data Journey) -->
+    <section class="glass-card rounded-3xl p-8 sm:p-12 border border-slate-700/50 relative overflow-hidden">
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-transparent via-slate-800/20 to-transparent pointer-events-none">
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+      <h2 class="text-2xl font-bold text-white mb-10 font-mono flex items-center">
+        <span class="w-2 h-8 bg-cyan-400 mr-4 rounded-full"></span>
+        THE DATA PIPELINE
+      </h2>
+
+      <div class="relative flex flex-col md:flex-row justify-between items-center gap-8">
+        <!-- Connecting Line (Desktop) -->
+        <div
+          class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-slate-700 via-cyan-500 to-rose-500 -z-10 transform -translate-y-1/2">
+        </div>
+
         <!-- Step 1 -->
-        <div class="relative p-4 rounded-lg bg-slate-50 border border-slate-100">
-          <div class="text-3xl mb-2">🧑‍💻</div>
-          <h4 class="font-bold text-slate-700">1. User Input</h4>
-          <p class="text-xs text-slate-500 mt-2">You paste sensitive code or data.</p>
-        </div>
-
-        <!-- Connector -->
-        <div class="hidden md:flex items-center justify-center text-slate-300">
-          <span class="text-2xl">➔</span>
+        <div
+          class="bg-slate-900 border border-slate-700 p-6 rounded-xl w-full md:w-64 text-center z-10 shadow-lg relative group hover:-translate-y-1 transition-transform">
+          <div
+            class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-slate-600 group-hover:border-cyan-400 transition-colors">
+            ⌨️</div>
+          <h4 class="text-white font-bold mb-1">Input</h4>
+          <p class="text-xs text-slate-400">Web Interface / App</p>
         </div>
 
         <!-- Step 2 -->
-        <div class="relative p-4 rounded-lg bg-slate-50 border border-slate-100">
-          <div class="text-3xl mb-2">☁️</div>
-          <h4 class="font-bold text-slate-700">2. Processing</h4>
-          <p class="text-xs text-slate-500 mt-2">Context cached to generate reply.</p>
+        <div
+          class="bg-slate-900 border border-slate-700 p-6 rounded-xl w-full md:w-64 text-center z-10 shadow-lg relative group hover:-translate-y-1 transition-transform">
+          <div
+            class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-slate-600 group-hover:border-cyan-400 transition-colors">
+            💾</div>
+          <h4 class="text-white font-bold mb-1">Log Storage</h4>
+          <p class="text-xs text-slate-400">Cached for context</p>
         </div>
 
-        <!-- Connector -->
-        <div class="hidden md:flex items-center justify-center text-slate-300">
-          <span class="text-2xl">➔</span>
+        <!-- Step 3 (Danger) -->
+        <div
+          class="bg-slate-900 border border-rose-500/50 p-6 rounded-xl w-full md:w-64 text-center z-10 shadow-[0_0_30px_rgba(244,63,94,0.2)] relative group hover:-translate-y-1 transition-transform">
+          <div
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-[9px] font-bold px-3 py-1 rounded-full tracking-wider uppercase pulse-badge">
+            Default ON</div>
+          <div
+            class="w-12 h-12 bg-rose-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-rose-500/50 text-rose-400">
+            ⚠️</div>
+          <h4 class="text-white font-bold mb-1">Training Set</h4>
+          <p class="text-xs text-rose-300/80">Fed to Base Model</p>
         </div>
 
-        <!-- Step 3 (Split) -->
-        <div class="relative p-4 rounded-lg bg-yellow-50 border border-yellow-100">
-          <div class="absolute top-0 right-0 -mt-2 -mr-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
-            Critical Junction</div>
-          <div class="text-3xl mb-2">🔍</div>
-          <h4 class="font-bold text-slate-800">3. Sanitization</h4>
-          <p class="text-xs text-slate-600 mt-2">PII removal (Success varies by vendor).</p>
-        </div>
-
-        <!-- Connector -->
-        <div class="hidden md:flex items-center justify-center text-slate-300">
-          <span class="text-2xl">➔</span>
-        </div>
-
-        <!-- Step 4 Result -->
-        <div class="relative p-4 rounded-lg bg-slate-50 border border-slate-100">
-          <div class="text-3xl mb-2">🤖</div>
-          <h4 class="font-bold text-slate-700">4. Training</h4>
-          <p class="text-xs text-slate-500 mt-2">If Free/Consumer, data enters the model.</p>
+        <!-- Step 4 -->
+        <div
+          class="bg-slate-900 border border-slate-700 p-6 rounded-xl w-full md:w-64 text-center z-10 shadow-lg relative group hover:-translate-y-1 transition-transform">
+          <div
+            class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-slate-600 group-hover:border-cyan-400 transition-colors">
+            🧠</div>
+          <h4 class="text-white font-bold mb-1">Generation</h4>
+          <p class="text-xs text-slate-400">Learned knowledge</p>
         </div>
       </div>
     </section>
 
-    <!-- Section 5: Risk Calculator -->
-    <section id="calculator"
-      class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-lg p-8 text-white scroll-mt-20">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-2xl font-bold mb-2">🛡️ Privacy Risk Calculator</h2>
-        <p class="text-slate-300 mb-8 text-sm">Answer 3 questions to assess your current exposure.</p>
+    <!-- Vendor Matrix -->
+    <section id="matrix">
+      <div class="flex flex-col md:flex-row justify-between items-end mb-8 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-2 font-mono">VENDOR PROTOCOLS</h2>
+          <p class="text-slate-400 text-sm">Live Policy Status • Updated Q4 2025</p>
+        </div>
+        <div class="flex space-x-2 mt-4 md:mt-0 bg-slate-900/50 p-1 rounded-lg border border-slate-800">
+          <button onclick="setFilter('all')" id="btn-all"
+            class="px-4 py-2 text-xs font-mono rounded bg-cyan-500 text-black font-bold transition-all">ALL</button>
+          <button onclick="setFilter('us')" id="btn-us"
+            class="px-4 py-2 text-xs font-mono rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-all">US
+            / GLOBAL</button>
+          <button onclick="setFilter('cn')" id="btn-cn"
+            class="px-4 py-2 text-xs font-mono rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-all">CHINA</button>
+        </div>
+      </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <!-- Form -->
+      <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <!-- Cards injected via JS -->
+      </div>
+    </section>
+
+    <!-- Risk Calculator -->
+    <section id="risk" class="relative">
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl -z-10 border border-slate-800">
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 p-8 sm:p-12">
+        <div class="space-y-8">
+          <div>
+            <h2 class="text-3xl font-bold text-white mb-2 font-mono text-glow-blue">RISK DIAGNOSTIC</h2>
+            <p class="text-slate-400">Initialize usage assessment protocol.</p>
+          </div>
+
           <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">1. Which version do you use?</label>
-              <select id="calc-version"
-                class="w-full bg-slate-700 border-slate-600 rounded-md text-white p-2 focus:ring-2 focus:ring-blue-500 outline-none">
-                <option value="free">Free Consumer (Web/App)</option>
-                <option value="paid_personal">Paid Personal (ChatGPT Plus/Claude Pro)</option>
-                <option value="api">Developer API</option>
-                <option value="enterprise">Enterprise (Team/Workspace)</option>
-              </select>
+            <div class="group">
+              <label class="block text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">01. Account
+                Tier</label>
+              <div class="relative">
+                <select id="calc-version"
+                  class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-lg p-4 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all hover:border-slate-500 font-mono text-sm">
+                  <option value="free">Free Consumer (Web/App)</option>
+                  <option value="paid_personal">Paid Personal (Plus/Pro)</option>
+                  <option value="api">Enterprise / API (Isolated)</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">2. What data do you input?</label>
-              <select id="calc-data"
-                class="w-full bg-slate-700 border-slate-600 rounded-md text-white p-2 focus:ring-2 focus:ring-blue-500 outline-none">
-                <option value="general">General (Recipes, Travel plans)</option>
-                <option value="code">Company Code (No secrets)</option>
-                <option value="pii">PII (Names, Phones, Addresses)</option>
-                <option value="secrets">Core Secrets / API Keys / Financials</option>
-              </select>
+
+            <div class="group">
+              <label class="block text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">02. Data
+                Payload</label>
+              <div class="relative">
+                <select id="calc-data"
+                  class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-lg p-4 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all hover:border-slate-500 font-mono text-sm">
+                  <option value="general">General Knowledge</option>
+                  <option value="pii">PII (Names, Locations)</option>
+                  <option value="confidential">Confidential / Proprietary Code</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-2">3. Have you manually Opted-Out?</label>
-              <select id="calc-optout"
-                class="w-full bg-slate-700 border-slate-600 rounded-md text-white p-2 focus:ring-2 focus:ring-blue-500 outline-none">
-                <option value="no">No / Don't know how</option>
-                <option value="yes">Yes, I turned off history/training</option>
-              </select>
+
+            <div class="group">
+              <label class="block text-xs font-mono text-cyan-400 mb-2 uppercase tracking-wider">03. Policy
+                Override</label>
+              <div class="relative">
+                <select id="calc-optout"
+                  class="w-full bg-slate-900/50 border border-slate-700 text-white rounded-lg p-4 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all hover:border-slate-500 font-mono text-sm">
+                  <option value="no">No / Default Settings</option>
+                  <option value="yes">Yes, Manual Opt-Out Enabled</option>
+                </select>
+              </div>
             </div>
+
             <button onclick="calculateRisk()"
-              class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95">
-              Calculate Risk Level
+              class="w-full py-4 bg-gradient-to-r from-rose-600 to-rose-500 text-white font-mono font-bold tracking-widest rounded-lg shadow-lg shadow-rose-900/50 hover:shadow-rose-600/50 transition-all transform hover:-translate-y-1 active:translate-y-0 border border-rose-400">
+              RUN DIAGNOSTIC
             </button>
           </div>
+        </div>
 
-          <!-- Result Display -->
-          <div id="result-panel"
-            class="bg-slate-700/50 rounded-xl p-6 flex flex-col justify-center items-center text-center hidden">
-            <div id="risk-badge" class="px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 tracking-wider">Result
-            </div>
-            <h3 id="risk-title" class="text-3xl font-bold mb-2">--</h3>
-            <p id="risk-desc" class="text-slate-300 text-sm mb-6">--</p>
-
-            <div class="w-full text-left bg-slate-800/80 p-4 rounded-lg">
-              <h4 class="text-xs font-bold text-slate-400 uppercase mb-2">Recommended Actions:</h4>
-              <ul id="risk-actions" class="text-sm space-y-2 list-disc list-inside text-slate-200">
-                <!-- Actions injected here -->
-              </ul>
-            </div>
+        <!-- Result Terminal -->
+        <div class="relative bg-black rounded-xl border border-slate-800 p-6 font-mono flex flex-col min-h-[400px]">
+          <div class="flex items-center space-x-2 mb-6 border-b border-slate-800 pb-4">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            <span class="text-xs text-slate-500 ml-2">system_check.exe</span>
           </div>
 
-          <!-- Placeholder before calc -->
-          <div id="result-placeholder"
-            class="bg-slate-700/20 rounded-xl p-6 flex flex-col justify-center items-center text-center border-2 border-dashed border-slate-600">
-            <span class="text-4xl opacity-50 mb-2">📊</span>
-            <p class="text-slate-400">Click button to assess risk</p>
+          <div id="result-placeholder" class="flex-1 flex flex-col items-center justify-center text-slate-600">
+            <div class="animate-pulse text-4xl mb-4">_</div>
+            <p class="text-sm">Awaiting Input...</p>
+          </div>
+
+          <div id="result-panel" class="hidden flex-1 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+              <span class="text-xs text-slate-400">STATUS:</span>
+              <span id="risk-badge"
+                class="px-3 py-1 rounded bg-slate-800 text-xs font-bold uppercase tracking-widest border border-slate-700">--</span>
+            </div>
+
+            <h3 id="risk-title" class="text-2xl font-bold text-white mb-2">--</h3>
+            <p id="risk-desc" class="text-sm text-slate-400 mb-6 border-l-2 border-slate-700 pl-3">--</p>
+
+            <div class="mt-auto bg-slate-900/80 p-4 rounded border border-slate-700/50">
+              <h4 class="text-[10px] font-bold text-cyan-400 uppercase mb-3 tracking-widest">RECOMMENDED PROTOCOLS</h4>
+              <ul id="risk-actions" class="text-xs text-slate-300 space-y-2 list-none">
+                <!-- JS Injected -->
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-200 pt-8 pb-12 text-center">
-      <p class="text-slate-400 text-sm">
-        Disclaimer: Analysis based on publicly available privacy policies as of 2024.<br>
-        This app is for informational purposes only and does not constitute legal advice.
+    <footer class="border-t border-slate-800 pt-12 text-center pb-8">
+      <p class="text-slate-600 text-xs font-mono">
+        DATA SOURCE: 2025 TERMS OF SERVICE AUDIT.<br>
+        DESIGNED FOR CLARITY. NOT LEGAL ADVICE.
       </p>
     </footer>
 
   </main>
 
-  <!-- Data & Logic -->
   <script>
-    // --- DATA STORE ---
+    // --- VISUAL CONFIG ---
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#1e293b';
+    Chart.defaults.font.family = "'Space Grotesk', monospace";
+
+    // --- DATA STORE (UNCHANGED CONTENT, NEW STYLE) ---
     const vendors = [
       {
         id: 'openai',
-        name: 'OpenAI (GPT-4)',
+        name: 'OpenAI (GPT)',
         region: 'us',
-        type: 'Consumer',
         trainsOnData: true,
-        retention: '30 Days (Even if Opt-out)',
-        humanReview: 'Yes (Sampled)',
-        details: 'Free and Plus versions train on your data by default. You must disable "Chat History & Training" to opt-out. API and Enterprise data is NOT used for training.',
-        color: 'blue'
-      },
-      {
-        id: 'google',
-        name: 'Google (Gemini)',
-        region: 'us',
-        type: 'Consumer',
-        trainsOnData: true,
-        retention: 'Up to 18 Months',
-        humanReview: 'Yes (De-identified)',
-        details: 'Consumer Gemini collects data to improve models. Human reviewers may read de-identified snippets. Gemini for Workspace (Enterprise) does NOT train on data.',
+        retention: '30 Days',
+        humanReview: 'Sampled',
+        details: 'Free & Plus train by default. Opt-out via Data Controls.',
         color: 'blue'
       },
       {
         id: 'anthropic',
-        name: 'Anthropic (Claude)',
+        name: 'Claude',
         region: 'us',
-        type: 'Consumer',
-        trainsOnData: false,
-        retention: '90 Days (Security)',
-        humanReview: 'Rare (Security only)',
-        details: 'More privacy-focused by default. Policy states they do not use prompts for training unless you explicitly submit feedback (thumbs up/down).',
+        trainsOnData: true,
+        badge: 'SEPT 2025 UPDATE',
+        retention: 'Variable',
+        humanReview: 'Yes',
+        details: 'Policy Shift: Consumer prompts now used for training unless opted-out.',
+        color: 'blue'
+      },
+      {
+        id: 'google',
+        name: 'Gemini',
+        region: 'us',
+        trainsOnData: true,
+        retention: '18 Months',
+        humanReview: 'De-identified',
+        details: 'Consumer data trains models. Workspace is safe.',
         color: 'blue'
       },
       {
         id: 'ali',
         name: 'Alibaba (Qwen)',
         region: 'cn',
-        type: 'Consumer',
         trainsOnData: true,
-        retention: 'Per Compliance (6mo+)',
-        humanReview: 'Yes (Compliance)',
-        details: 'Complies with "Interim Measures." Consumer data optimizes models. Bailian (API) platform offers strict tenant data isolation.',
+        retention: 'Compliance',
+        humanReview: 'Strict',
+        details: 'Consumer optimizes model. API (Bailian) is isolated.',
         color: 'red'
       },
       {
         id: 'moonshot',
-        name: 'Moonshot (Kimi)',
+        name: 'Kimi',
         region: 'cn',
-        type: 'Consumer',
         trainsOnData: true,
         retention: 'Long Term',
         humanReview: 'Yes',
-        details: 'Focuses on long-context processing. Privacy policy allows using non-personal information for service optimization and model training.',
+        details: 'Non-personal info used for service improvement.',
         color: 'red'
       },
       {
         id: 'zhipu',
-        name: 'Zhipu AI (GLM)',
+        name: 'Zhipu (GLM)',
         region: 'cn',
-        type: 'Consumer',
         trainsOnData: true,
         retention: 'Long Term',
         humanReview: 'Yes',
-        details: 'Strong B2B focus with private deployment options. Consumer apps collect interaction data to improve experience and model quality.',
-        color: 'red'
-      },
-      {
-        id: 'minimax',
-        name: 'MiniMax',
-        region: 'cn',
-        type: 'Consumer',
-        trainsOnData: true,
-        retention: 'Long Term',
-        humanReview: 'Yes',
-        details: 'Known for roleplay/speech models. Strong content monitoring. Policy permits use of de-identified data for model iteration.',
+        details: 'Consumer app data trains model. Enterprise private.',
         color: 'red'
       }
     ];
 
     // --- RENDER FUNCTIONS ---
-
     function renderCards(filter) {
       const container = document.getElementById('cards-container');
       container.innerHTML = '';
@@ -523,38 +508,47 @@
 
       filteredVendors.forEach(v => {
         const isUS = v.region === 'us';
-        const borderColor = isUS ? 'border-l-blue-500' : 'border-l-red-500';
-        const tagBg = isUS ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700';
-        const regionLabel = isUS ? 'USA' : 'CHN';
+        // Styles
+        const borderColor = isUS ? 'border-l-cyan-500' : 'border-l-rose-500';
+        const regionColor = isUS ? 'text-cyan-400 bg-cyan-950/30 border-cyan-500/30' : 'text-rose-400 bg-rose-950/30 border-rose-500/30';
+        const regionLabel = isUS ? 'US-GLOBAL' : 'CN-COMPLIANCE';
+
+        let badgeHtml = v.badge ? `<span class="ml-2 text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded animate-pulse font-bold">${v.badge}</span>` : '';
+
+        let statusHtml = v.trainsOnData
+          ? `<div class="flex items-center text-rose-400 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-rose-500 mr-2 shadow-[0_0_8px_rgba(244,63,94,0.8)]"></span>TRAINS ON DATA</div>`
+          : `<div class="flex items-center text-emerald-400 text-xs font-bold"><span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>SAFE</div>`;
 
         const card = document.createElement('div');
-        card.className = `bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow ${borderColor} border-l-4`;
+        card.className = `glass-card p-6 rounded-xl hover:-translate-y-1 transition-transform duration-300 ${borderColor} border-l-4`;
 
         card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start mb-6">
                         <div>
-                            <span class="text-xs font-bold ${tagBg} px-2 py-1 rounded mb-2 inline-block">${regionLabel}</span>
-                            <h3 class="text-lg font-bold text-slate-800">${v.name}</h3>
-                        </div>
-                        <div class="text-right">
-                            ${v.trainsOnData
-            ? '<span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100">Trains on Data</span>'
-            : '<span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded border border-emerald-100">No Default Training</span>'}
+                            <div class="flex items-center mb-2">
+                                <span class="text-[10px] font-mono border px-2 py-0.5 rounded ${regionColor}">${regionLabel}</span>
+                                ${badgeHtml}
+                            </div>
+                            <h3 class="text-xl font-bold text-white font-mono tracking-tight">${v.name}</h3>
                         </div>
                     </div>
 
-                    <div class="space-y-3 text-sm text-slate-600 mb-6">
-                        <div class="flex justify-between border-b border-slate-50 pb-2">
-                            <span>Retention:</span>
-                            <span class="font-medium">${v.retention}</span>
+                    <div class="mb-6 border-t border-slate-700/50 pt-4">
+                        ${statusHtml}
+                    </div>
+
+                    <div class="space-y-3 text-xs font-mono text-slate-400 mb-6">
+                        <div class="flex justify-between">
+                            <span>RETENTION</span>
+                            <span class="text-slate-200">${v.retention}</span>
                         </div>
-                        <div class="flex justify-between border-b border-slate-50 pb-2">
-                            <span>Human Review:</span>
-                            <span class="font-medium">${v.humanReview}</span>
+                        <div class="flex justify-between">
+                            <span>HUMAN REVIEW</span>
+                            <span class="text-slate-200">${v.humanReview}</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 rounded p-3 text-xs text-slate-500 leading-relaxed">
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400 leading-relaxed border border-slate-800">
                         ${v.details}
                     </div>
                 `;
@@ -563,177 +557,135 @@
     }
 
     function setFilter(filter) {
-      // Update buttons
       ['all', 'us', 'cn'].forEach(f => {
         const btn = document.getElementById(`btn-${f}`);
         if (f === filter) {
-          btn.className = 'px-4 py-2 text-sm font-medium rounded-md bg-slate-100 text-slate-800 shadow-sm';
+          btn.className = 'px-4 py-2 text-xs font-mono rounded bg-cyan-500 text-black font-bold transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)]';
         } else {
-          btn.className = 'px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:bg-slate-50';
+          btn.className = 'px-4 py-2 text-xs font-mono rounded text-slate-400 hover:text-white hover:bg-slate-800 transition-all';
         }
       });
       renderCards(filter);
     }
 
-    // --- CHART INITIALIZATION ---
-
+    // --- CHARTS ---
     function initCharts() {
-      // Radar Chart
+      // Radar
       const ctxRadar = document.getElementById('radarChart').getContext('2d');
       new Chart(ctxRadar, {
         type: 'radar',
         data: {
-          labels: ['Transparency', 'User Control', 'Data Isolation', 'Compliance Rigor', 'Anonymity'],
+          labels: ['Transparency', 'User Control', 'Isolation', 'Compliance', 'Anonymity'],
           datasets: [{
-            label: 'US / Global (Avg)',
-            data: [70, 85, 90, 60, 75],
-            fill: true,
-            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            borderColor: 'rgb(59, 130, 246)',
-            pointBackgroundColor: 'rgb(59, 130, 246)',
+            label: 'Global',
+            data: [60, 75, 95, 60, 60],
+            backgroundColor: 'rgba(34, 211, 238, 0.2)',
+            borderColor: '#22d3ee',
+            pointBackgroundColor: '#22d3ee',
             pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(59, 130, 246)'
+            borderWidth: 2
           }, {
-            label: 'China (Avg)',
-            data: [50, 60, 85, 95, 40],
-            fill: true,
-            backgroundColor: 'rgba(239, 68, 68, 0.2)',
-            borderColor: 'rgb(239, 68, 68)',
-            pointBackgroundColor: 'rgb(239, 68, 68)',
+            label: 'China',
+            data: [50, 60, 90, 95, 40],
+            backgroundColor: 'rgba(244, 63, 94, 0.2)',
+            borderColor: '#f43f5e',
+            pointBackgroundColor: '#f43f5e',
             pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(239, 68, 68)'
+            borderWidth: 2
           }]
         },
         options: {
           maintainAspectRatio: false,
-          elements: {
-            line: { borderWidth: 3 }
-          },
           scales: {
             r: {
-              angleLines: { display: true },
-              suggestedMin: 0,
-              suggestedMax: 100
+              angleLines: { color: '#334155' },
+              grid: { color: '#1e293b' },
+              pointLabels: { color: '#94a3b8', font: { size: 10 } },
+              ticks: { display: false, backdropColor: 'transparent' }
             }
-          }
+          },
+          plugins: { legend: { labels: { color: '#94a3b8' } } }
         }
       });
 
-      // Doughnut Chart
+      // Doughnut
       const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
       new Chart(ctxDoughnut, {
         type: 'doughnut',
         data: {
-          labels: ['Trains on Data', 'No Training', 'Conditional'],
+          labels: ['Training (Default)', 'Safe', 'Conditional'],
           datasets: [{
-            data: [5, 1, 1],
-            backgroundColor: [
-              '#ef4444', // Red
-              '#10b981', // Emerald
-              '#f59e0b'  // Amber
-            ],
-            hoverOffset: 4
+            data: [99, 1, 0],
+            backgroundColor: ['#f43f5e', '#10b981', '#f59e0b'],
+            borderColor: '#0f172a',
+            borderWidth: 2
           }]
         },
         options: {
           maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'right',
-            }
-          }
+          plugins: { legend: { position: 'right', labels: { color: '#94a3b8' } } },
+          cutout: '70%'
         }
       });
     }
 
-    // --- RISK CALCULATOR LOGIC ---
-
+    // --- RISK CALCULATOR ---
     function calculateRisk() {
       const version = document.getElementById('calc-version').value;
       const data = document.getElementById('calc-data').value;
       const optout = document.getElementById('calc-optout').value;
 
       let score = 0;
-      // Base Risk
       if (version === 'free') score += 50;
-      if (version === 'paid_personal') score += 30;
-      if (version === 'api' || version === 'enterprise') score += 0;
+      if (version === 'paid_personal') score += 45;
+      if (data === 'pii') score += 30;
+      if (data === 'confidential') score += 100;
+      if (optout === 'yes' && version !== 'api') score -= 40;
 
-      // Data Sensitivity Risk
-      if (data === 'general') score += 0;
-      if (data === 'code') score += 20;
-      if (data === 'pii') score += 40;
-      if (data === 'secrets') score += 100;
-
-      // Mitigation
-      if (optout === 'yes' && version !== 'api' && version !== 'enterprise') score -= 30;
-
-      // Determine Level
-      let level = '';
-      let colorClass = '';
-      let title = '';
-      let desc = '';
-      let actions = [];
+      let level, color, title, desc, actions;
 
       if (score >= 80) {
-        level = 'high';
-        colorClass = 'bg-red-500 text-white';
-        title = 'HIGH RISK 🚨';
-        desc = 'Your usage pattern is very likely to leak sensitive data into public models.';
-        actions = [
-          'Stop inputting this type of data immediately.',
-          'For code/secrets, you MUST switch to an Enterprise or API plan.',
-          'Check if you can manually delete chat history.'
-        ];
+        level = 'CRITICAL';
+        color = 'text-rose-500 border-rose-500 bg-rose-500/10';
+        title = 'CRITICAL DATA LEAK';
+        desc = 'High probability of sensitive data ingestion into public model vectors.';
+        actions = ['STOP INPUT IMMEDIATELY', 'Switch to Enterprise/API', 'Consumer Opt-out is insufficient for Secrets'];
       } else if (score >= 40) {
-        level = 'med';
-        colorClass = 'bg-yellow-500 text-white';
-        title = 'MEDIUM RISK ⚠️';
-        desc = 'Your data might be used for training. Risk is manageable but requires caution.';
-        actions = [
-          'Go to settings and disable "Chat History & Training" (Opt-out).',
-          'Manually sanitize names/locations before sending prompts.'
-        ];
+        level = 'WARNING';
+        color = 'text-yellow-500 border-yellow-500 bg-yellow-500/10';
+        title = 'MODERATE EXPOSURE';
+        desc = 'Data likely used for training. Privacy relies on obscure opt-out settings.';
+        actions = ['Verify "Data Controls" in Settings', 'Sanitize PII manually', 'Assume data is being read'];
       } else {
-        level = 'low';
-        colorClass = 'bg-emerald-500 text-white';
-        title = 'SAFE ✅';
-        desc = 'Your usage habits are secure. Low risk of data leakage.';
-        actions = [
-          'Keep up the good habits.',
-          'Check periodically for privacy policy updates.'
-        ];
+        level = 'SECURE';
+        color = 'text-emerald-400 border-emerald-400 bg-emerald-400/10';
+        title = 'ENVIRONMENT SECURE';
+        desc = 'API isolation or strict opt-out detected. Low risk.';
+        actions = ['Maintain current protocols', 'Monitor quarterly policy updates'];
       }
 
-      // Update UI
-      document.getElementById('result-placeholder').classList.add('hidden');
-      const panel = document.getElementById('result-panel');
-      panel.classList.remove('hidden');
+      const p = document.getElementById('result-placeholder');
+      const r = document.getElementById('result-panel');
+      p.classList.add('hidden');
+      r.classList.remove('hidden');
 
       const badge = document.getElementById('risk-badge');
-      badge.className = `px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 tracking-wider ${colorClass}`;
-      badge.innerText = level === 'high' ? 'High Risk' : (level === 'med' ? 'Medium Risk' : 'Safe');
+      badge.className = `px-3 py-1 rounded text-xs font-bold uppercase tracking-widest border ${color}`;
+      badge.innerText = level;
 
       document.getElementById('risk-title').innerText = title;
       document.getElementById('risk-desc').innerText = desc;
-
-      const actionList = document.getElementById('risk-actions');
-      actionList.innerHTML = actions.map(a => `<li>${a}</li>`).join('');
+      document.getElementById('risk-actions').innerHTML = actions.map(a => `<li class="flex items-center"><span class="text-cyan-500 mr-2">></span>${a}</li>`).join('');
     }
 
-    // --- UTILS ---
     function scrollToSection(id) {
       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
 
-    // --- INIT ---
     window.addEventListener('DOMContentLoaded', () => {
       renderCards('all');
       initCharts();
     });
-
   </script>
 </body>
 
